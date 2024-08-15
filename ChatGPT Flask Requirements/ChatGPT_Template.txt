@@ -1,0 +1,63 @@
+User Story and Functional Requirements for:
+Description 
+
+JIRA
+GPT-## (and linked tasks)
+
+USER STORY: 
+Sort, simple description of a feature told from the perspective of the person who desires the new/changed functionality.
+As a user 
+I want to
+For this benefit
+
+TYPE OF CODE/APPLICATION NEEDED: 
+
+FUNCTIONAL REQUIREMENTS:
+* FR 1
+* FR 2
+* FR 3
+
+CODING REQUIREMENTS AND GUIDELINES:
+* 1
+* 2
+* 3
+
+APPLICATION ARCHITECTURE:
+* 1
+* 2
+* 3
+
+IMAGE(S):
+* 1
+* 2
+* 3
+
+NEW OR UPDATED CODE AND FILES REQUIREMENTS:
+* 1
+* 2
+* 3
+
+EXISTING DATABASE:
+* 1
+* 2
+* 3
+
+EXISTING LIBRARY:
+* 1
+* 2
+* 3
+
+CURRENT FILE AND FOLDER STRUCTURE:
+
+data_science_application.py
+├── folder
+│   ├──file.py
+│   ├──file.html
+│   ├──file.db
+
+
+
+USE/EXPAND EXISTING CODE:
+* File name: python.py
+* File Type: Python Library
+* Code: 

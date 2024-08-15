@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Select Table to Display Data</h1>
+
+<form method="post" class="form-inline"><!-- Bootstrap -->
+    <label for="table" class="mr-2">Select Table:</label><!-- Bootstrap -->
+    <select name="table" id="table" class="form-control mr-2"><!-- Bootstrap -->
+        {% for table in metadata %}
+            <option value="{{ table }}" {% if table == selected_table %}selected{% endif %}>{{ table }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">Display Data</button>
+</form>
+
+{% if table_data is not none and not table_data.empty %}
+    <h2>Data from Table: {{ selected_table }}</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                {% for col in table_data.columns %}
+                    <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data.iterrows() %}
+                <tr>
+                    {% for col in row[1] %}
+                        <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if table_stats is not none %}
+    <h2>Statistics for Table: {{ selected_table }}</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th></th>
+                {% for col in table_stats.columns %}
+                    <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_stats.itertuples() %}
+                <tr>
+                    {% for col in row %}
+                        <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% endblock %}

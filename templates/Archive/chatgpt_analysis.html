@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>ChatGPT Analysis</h2>
+<form method="post">
+    <div>
+        <label for="model_name">Select Model:</label>
+        <select id="model_name" name="model_name">
+            {% for model in model_names %}
+                <option value="{{ model }}">{{ model }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="user_input">Enter text:</label>
+        <textarea id="user_input" name="user_input" rows="10" cols="100" maxlength="10000"></textarea>
+    </div>
+    <button type="submit">Submit to ChatGPT</button>
+</form>
+{% if chatgpt_results %}
+    <h3>Analysis</h3>
+    <div>{{ chatgpt_results }}</div>
+{% endif %}
+{% endblock %}

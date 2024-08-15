@@ -1,0 +1,103 @@
+{% extends "data_science_application_basemodels.html" %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Submit Images for Analysis</title>
+</head>
+<body>
+    {% block title %}Model Development Process Flow and analysis with ChatGPT{% endblock %}
+    
+    {% block content %}
+        <h1>Process Flow for Creating and Presenting a Predictive Model</h1>
+    
+        <h2>Instructions</h2>
+        <p>Creating and presenting a predictive model involves a structured process flow, starting from understanding user requirements and ending with recommendations for next steps. This application follows the process below. Each token must go through the process which is implemented by web pages.</p>
+        <p>The workflow status page lists all the models and their location in the workflow based on the last page that was used to develop the model.</p>
+    
+        <h2>User Requirements/User Ask</h2>
+        <ul>
+            <li><strong>Gather Requirements:</strong> Understand the problem the user is trying to solve, the business objectives, and the specific questions they want the model to answer.</li>
+            <li><strong>Define Scope:</strong> Clearly define the scope of the analysis, including the target variable, independent variables, and any constraints or assumptions.</li>
+        </ul>
+    
+        <h2>Data Collection</h2>
+        <ul>
+            <li><strong>Identify Data Sources:</strong> Determine where the necessary data is located (databases, CSV files, APIs, etc.).</li>
+            <li><strong>Collect Data:</strong> Gather the relevant data required for the analysis.</li>
+            <li><strong>Collect Data:</strong> Create Data Model.</li>
+            <li><strong>Collect Data:</strong> Document Metadata.</li>
+        </ul>
+    
+        <h2>Data Preparation</h2>
+        <ul>
+            <li><strong>Data Cleaning:</strong> Handle missing values, remove duplicates, and correct any inconsistencies in the data.</li>
+            <li><strong>Data Transformation:</strong> Normalize or standardize data if necessary, create dummy variables for categorical data, and perform any other necessary transformations.</li>
+            <li><strong>Feature Engineering:</strong> Create new features that may improve the model’s predictive power.</li>
+        </ul>
+    
+        <h2>Exploratory Data Analysis (EDA)</h2>
+        <ul>
+            <li><strong>Descriptive Statistics:</strong> Calculate mean, median, standard deviation, and other descriptive statistics for the data.</li>
+            <li><strong>Visualization:</strong> Create visualizations such as histograms, scatter plots, and correlation matrices to understand relationships between variables and to detect any patterns or anomalies.</li>
+        </ul>
+    
+        <h2>Model Selection</h2>
+        <ul>
+            <li><strong>Choose Model Type:</strong> Decide on using linear regression, logistic regression, or a neural network based on the problem type and data characteristics.</li>
+            <li><strong>Split Data:</strong> Divide the data into training and testing sets to evaluate the model’s performance.</li>
+        </ul>
+    
+        <h2>Model Building</h2>
+        <ul>
+            <li><strong>Fit Model:</strong> Use the training data to fit the model.</li>
+            <li><strong>Model Parameters:</strong> Estimate the coefficients of the regression equation or the parameters of the neural network.</li>
+        </ul>
+    
+        <h2>Model Evaluation</h2>
+        <ul>
+            <li><strong>Performance Metrics:</strong> Evaluate the model using appropriate metrics such as R-squared, Accuracy, Mean Absolute Error (MAE), Mean Squared Error (MSE), Root Mean Squared Error (RMSE), Precision, Recall, and F1-Score.</li>
+            <li><strong>Validation:</strong> Use the testing set to validate the model and ensure it generalizes well to unseen data.</li>
+            <li><strong>Residual Analysis:</strong> Analyze residuals or errors to check for patterns that might indicate a poor fit.</li>
+        </ul>
+    
+        <h2>Model Interpretation</h2>
+        <ul>
+            <li><strong>Coefficient Significance:</strong> Assess the significance of each predictor variable through p-values and confidence intervals (for regression models).</li>
+            <li><strong>Model Insights:</strong> Translate the model parameters into actionable business insights.</li>
+            <li><strong>Model Factor Analysis:</strong> Determine which factors have the largest impact on the model’s predictions.</li>
+        </ul>
+    
+        <h2>Model Recommendation/Prediction</h2>
+    
+        <h2>Presentation Preparation</h2>
+        <ul>
+            <li><strong>Results Summary:</strong> Summarize the key findings, model performance, and insights gained from the analysis.</li>
+            <li><strong>Visual Aids:</strong> Prepare visual aids such as charts, graphs, and tables to illustrate the model’s performance and key insights.</li>
+            <li><strong>Recommendations:</strong> Provide recommendations based on the model’s outcomes and the business context.</li>
+        </ul>
+    
+        <h2>Presentation to Stakeholders</h2>
+        <ul>
+            <li><strong>Tailor Presentation:</strong> Customize the presentation to the audience, focusing on the aspects most relevant to their interests and level of technical expertise.</li>
+            <li><strong>Communicate Clearly:</strong> Clearly explain the methodology, findings, and implications in a way that is understandable to non-technical stakeholders.</li>
+            <li><strong>Answer Questions:</strong> Be prepared to answer any questions and address any concerns from the audience.</li>
+        </ul>
+    
+        <h2>Next Steps</h2>
+        <ul>
+            <li><strong>Implementation Plan:</strong> Propose a plan for implementing the model’s insights and recommendations.</li>
+            <li><strong>Model Deployment:</strong> Discuss how the model can be integrated into existing systems or workflows.</li>
+            <li><strong>Monitoring and Maintenance:</strong> Suggest a plan for ongoing monitoring and maintenance of the model to ensure it continues to perform well over time.</li>
+            <li><strong>Future Enhancements:</strong> Identify potential areas for further research or model improvements.</li>
+        </ul>
+    
+        <p>This structured process ensures a thorough approach to developing and presenting a predictive model, from initial requirements to actionable next steps.</p>
+    
+     <h1>Model Development Process Flow Diagram</h1>
+    <img src="{{ url_for('static', filename='Model_Development_Process_Flow.PNG') }}" alt="Model Development Process Flow">
+</body>
+    {% endblock %}
+</body>
+</html>

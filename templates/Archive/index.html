@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Spotify Song Prediction App{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Spotify Summary</h1>
+    <ul>
+        <li>This application uses Spotify data.</li>
+        <li>Spotify is an audio streaming and media service provider.</li>
+        <li>It is one of the largest music streaming service providers with:
+            <ul>
+                <li>Over 615 million monthly active users</li>
+                <li>239 million paying subscribers *</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h1>Display Data</h1>
+    <ul>
+        <li>Displays the top 10 rows of any table in the database.</li>
+        <li>Shows the table statistics</li>
+    </ul>
+
+    <h1>Model Results</h1>
+    <ul>
+        <li>Runs the neural network model on the table selected in the drop-down list box.</li>
+    </ul>
+
+    <h1>ChatGPT Analysis</h1>
+    <ul>
+        <li>Note that the ChatGPT API does not remember previous queries. They are independent.</li>
+        <li>Submits the results of a model to ChatGPT for analysis.</li>
+        <li>Returns the analysis with an explanation of the model.</li>
+    </ul>
+
+    <h1>ChatGPT Conversation</h1>
+    <ul>
+        <li>Contains a text box and a Submit to ChatGPT button.</li>
+        <li>Allows a conversation with ChatGPT.</li>
+    </ul>
+
+    <h1>Recommendation</h1>
+    <ul>
+        <li>The user can enter values for each factor and get the 10 to song recommendations.</li>
+        <li>Note that each factor has a different numeric scale. See list below for values:</li>
+    </ul>
+
+
+    <p>* <a href="https://en.wikipedia.org/wiki/Spotify">https://en.wikipedia.org/wiki/Spotify</a></p>
+
+    
+</section>
+{% endblock %}

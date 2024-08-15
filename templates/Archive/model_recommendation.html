@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 4 Team 7</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<section>
+    <h1>Can We Pick Your Next Favorite Song?</h1>
+        <p>Please select all the attributes you want to hear in your ideal song:</p>    
+</section>
+
+
+
+
+
+<body>
+    <div class="main-content">
+        <div class="checkbox">
+
+            <div class="selectedDetails">
+                <table id="selectedTable">
+                    <button id="resetButton">Reset</button>
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <form action="/model_recommendation" method='post'>
+            <div class="checkbox">
+                <input type="checkbox" id="Danceability" value="Danceability">
+                <label for="Danceability">High Danceability</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Energy" value="Energy">
+                <label for="Energy">High Energy</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Key" value="Key">
+                <label for="Key">Key</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Loudness" value="Loudness">
+                <label for="Loudness">Loud</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Mode" value="Mode">
+                <label for="Mode">Mode</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Verbosity" value="Verbosity">
+                <label for="Verbosity">Highly Verbal</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Acousticness" value="Acousticness">
+                <label for="Acousticness">Acousticness</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Instrumentality" value="Instrumentality">
+                <label for="Instrumentality">Instrumentality</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Liveliness" value="Liveliness">
+                <label for="Liveliness">Lively</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Valence" value="Valence">
+                <label for="Valence">Valence</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Tempo" value="Tempo">
+                <label for="Tempo">High Tempo</label>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="Duration" value="Duration">
+                <label for="Duration">Long Duration</label>
+            </div>
+            <div>
+                <input type='submit' value='Submit'>
+            </div>
+            <div>
+                {{recommendations}}
+            </div>
+            </form>
+            </div>
+        </div>
+    </div>

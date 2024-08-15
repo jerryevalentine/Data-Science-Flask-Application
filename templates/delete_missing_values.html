@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Missing Values</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Select from the table below:</h2>
+    <form method="POST">
+        <label for="tableSelect">Table:</label>
+        <select name="selected_table" id="tableSelect">
+            {% for table in tables %}
+                <option value="{{ table }}" {% if table == selected_table %}selected{% endif %}>{{ table }}</option>
+            {% endfor %}
+        </select>
+        
+        <button type="submit" name="action" value="Show Missing Values">Show number of null, NaN, or missing values in table</button>
+        <button type="submit" name="action" value="Delete Missing Values">Delete all missing/NaN/missing values from table</button>
+        <button type="button" onclick="window.location.href='/delete_missing_values';">Refresh</button>
+    </form>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% if missing_values %}
+        <h3>Missing Values in {{ selected_table }}</h3>
+        <ul>
+            {% for column, count in missing_values.items() %}
+                <li>{{ column }}: {{ count }} missing values</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

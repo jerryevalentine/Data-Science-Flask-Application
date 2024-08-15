@@ -1,0 +1,204 @@
+file_upload.html functional requirements
+
+TYPE OF CODE/APPLICATION NEEDED: 
+Python Flask application 
+
+NEW OR UPDATED CODE AND FILES REQUIREMENTS:
+* Create new file_upload.py (in the root where data_science_application.py - see 'CURRENT FILE AND FOLDER STRUCTURE')
+* Create new file_upload.html (in templates - see 'CURRENT FILE AND FOLDER STRUCTURE')
+* Updated data_science_application_basemodels.html
+* IF NEEDED, new library items or updated library items.
+
+TOP REQUIREMENTS:
+Must use only the library item SQLite_Database.insert_csv_to_db.
+Must only have programming code in Python whenever possible.
+
+APPLICATION ARCHITECTURE:
+All code should:
+* Be from the  library or the library needs another function.  As much program code should be in the library, not in the flask application.
+class SQLite_Database:
+SQLite_Database.py
+
+EXISTING DATABAE:
+See data_science_application.db below 
+
+EXISTING LIBRARY:
+See DataArchitecture.py below 
+
+CURRENT FILE AND FOLDER STRUCTURE:
+
+data_science_application.py
+├── templates
+│   ├──data_science_application_index.html
+│   ├──data_science_application_basemodels.html
+│   ├── business_glossary.html
+├── libraries
+│   └── DataArchitecture.py
+├── static
+│   ├──data_science_application_styles.css
+│   ├──Model_Development_Process_Flow.PNG
+├── database
+│   └── data_science_application.db
+
+
+
+USER STORY: 
+As a user I want to upload a CSV file into the application.  
+
+FUNCTIONAL REQUIREMENTS:
+* Variables:
+** db_path = 'database/data_science_application.db'
+
+
+
+Have a button that, when pressed, opens a file browser that allows me to select my file for upload.
+A text box must require a name for the database table.
+Only allow CSV files.
+Confirm that the file has been uploaded.
+Message that either tells the user that the file was successful or display the error message, ideally one that the user can understand.
+Use can existing library function from SQLite_Database
+
+
+EXISTING CODE:
+* File name: SQLite_Database.py
+* File Type: Python Library
+* Code: 
+
+import sqlite3
+import pandas as pd
+import os
+from flask import g
+
+class SQLite_Database:
+    def __init__(self, db_path):
+        self.db_path = db_path
+
+    def connect(self):
+        if 'conn' not in g:
+            g.conn = sqlite3.connect(self.db_path)
+        return g.conn
+
+    def close(self):
+        conn = g.pop('conn', None)
+        if conn:
+            conn.close()
+
+    def create_database(self, db_name, db_path):
+        os.makedirs(db_path, exist_ok=True)
+        db_full_path = os.path.join(db_path, db_name)
+        connection = sqlite3.connect(db_full_path)
+        connection.close()
+        return db_full_path
+
+    def get_sqlite_metadata(self):
+        conn = self.connect()
+        query_metadata = "SELECT name FROM sqlite_master WHERE type='table';"
+        tables_df = pd.read_sql_query(query_metadata, conn)
+        metadata = []
+
+        for table in tables_df['name']:
+            columns_query = f'PRAGMA table_info("{table}");'
+            columns_df = pd.read_sql_query(columns_query, conn)
+            for _, row in columns_df.iterrows():
+                metadata.append((table, row['name'], row['type']))
+
+        metadata_df = pd.DataFrame(metadata, columns=['Table Name', 'Column Name', 'Data Type'])
+        return metadata_df
+
+    def fetch_query(self, query):
+        conn = self.connect()
+        df = pd.read_sql_query(query, conn)
+        return df
+
+    def fetch_table(self, table_name):
+        """
+        Fetches all records from a specific table.
+
+        Parameters:
+        table_name (str): Name of the table to fetch records from.
+
+        Returns:
+        pd.DataFrame: DataFrame containing all records from the table.
+        """
+        conn = self.connect()
+        query = f"SELECT * FROM {table_name}"
+        df = pd.read_sql_query(query, conn)
+        return df
+
+    def insert_csv_to_db(self, file_path, table_name):
+        conn = self.connect()
+        df = pd.read_csv(file_path)
+        df.to_sql(table_name, conn, if_exists='replace', index=False)
+
+    def create_table_from_query(self, table_name, query):
+        conn = self.connect()
+        df = pd.read_sql_query(query, conn)
+        df.to_sql(table_name, conn, if_exists='replace', index=False)
+
+    def insert_record(self, table_name, columns, values):
+        conn = self.connect()
+        placeholders = ', '.join(['?'] * len(values))
+        query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({placeholders})"
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+
+    def update_record(self, table_name, columns, values, condition):
+        conn = self.connect()
+        set_clause = ', '.join([f"{col} = ?" for col in columns])
+        query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+
+    def delete_record(self, table_name, condition):
+        conn = self.connect()
+        query = f"DELETE FROM {table_name} WHERE {condition}"
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+
+    def clear_table(self, table_name):
+        conn = self.connect()
+        query = f"DELETE FROM {table_name}"
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+
+
+* File name: data_science_application_basemodels.html
+* File Type: Base page for other pages
+* Code: 
+
+<!--Master:Detail-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>{% block title %}Neural Network and ChatGPT{% endblock %}</title>
+
+<!--Bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="nav-pane">
+            <ul class="nav flex-column">
+                <li class="nav-item">Website Navigation
+                    <a class="nav-link" href="/">Model Development Process Flow</a>
+                    <a class="nav-link" href="/business_glossary">Business Glossary</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container mt-4">
+        {% block content %}
+        <!-- This block will be overridden by content from other pages -->
+        {% endblock %}
+    </main>   
+</body>
+</html>
+

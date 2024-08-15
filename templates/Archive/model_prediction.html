@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Prediction</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: #d5f979; font-family: Verdana;">Is My Song a HIT?</h2>
+        <form action="/model_results" method="POST">
+            <div class="form-group">
+                <label for="danceability">Danceability</label>
+                <select id="danceability" name="danceability">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="energy">Energy</label>
+                <select id="energy" name="energy">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="key">Key</label>
+                <select id="key" name="key">
+                    <option value="C">C</option>
+                    <option value="C#">C#</option>
+                    <option value="D">D</option>
+                    <option value="D#">D#</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="F#">F#</option>
+                    <option value="G">G</option>
+                    <option value="G#">G#</option>
+                    <option value="A">A</option>
+                    <option value="A#">A#</option>
+                    <option value="B">B</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="loudness">Loudness</label>
+                <select id="loudness" name="loudness">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="mode">Mode</label>
+                <select id="mode" name="mode">
+                    <option value="Major">Major</option>
+                    <option value="Minor">Minor</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="speechiness">Speechiness</label>
+                <select id="speechiness" name="speechiness">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="acousticness">Acousticness</label>
+                <select id="acousticness" name="acousticness">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="instrumentalness">Instrumentalness</label>
+                <select id="instrumentalness" name="instrumentalness">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="liveliness">Liveliness</label>
+                <select id="liveliness" name="liveliness">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="valence">Valence</label>
+                <select id="valence" name="valence">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tempo">Tempo</label>
+                <select id="tempo" name="tempo">
+                    <option value="Slow">Slow</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Fast">Fast</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="duration_ms">Duration_ms</label>
+                <select id="duration_ms" name="duration_ms">
+                    <option value="Short">Short</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Long">Long</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="release_month">Release_month</label>
+                <select id="release_month" name="release_month">
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="playlist_genere">Playlist_genere</label>
+                <select id="playlist_genere" name="playlist_genere">
+                    <option value="pop">Pop</option>
+                    <option value="rock">Rock</option>
+                    <option value="hip-hop">Hip-Hop</option>
+                    <option value="jazz">Jazz</option>
+                    <option value="classical">Classical</option>
+                    <option value="electronic">Electronic</option>
+                </select>
+            </div>
+            <button type="submit">Is My Song a HIT?</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,236 @@
+User Story and Functional Requirements for Delete Missing Values:
+
+JIRA
+GPT-89 (and linked tasks)
+
+USER STORY: 
+As a data science user
+I want to delete any row that has any missing values
+So that null or missing values will not impact the model.
+
+TYPE OF CODE/APPLICATION NEEDED: 
+delete_missing.py Flask APPLICATION
+
+FUNCTIONAL REQUIREMENTS:
+* Label that says "Select from table below" that contains all the tables in the SQLite Database.
+* Drop-down list box that allows the user to select an existing table.
+* Button that says "Show number of null, NaN, or missing values in table"
+* An object that displays the number of missing values for each column in the database table.
+* A button that says "Delete all missing/NaN/missing values from table"
+* A message that confirms either the successful deletion of the missing values, or an error message.
+* A refresh button clears all items on the page.
+
+CODING REQUIREMENTS AND GUIDELINES:
+* The code must use the existing library functionality.
+* If the functionality needs to be created then the new functions need to be modified.
+* If existing functions need to be changed it must be explicitly noted as it might break existing routes.
+* All programming code, whenever possible, needs to be in a library.  
+* Any code for the route must reside in the route.  Putting code into another route or a function in the application is not permitted.
+
+NEW OR UPDATED CODE AND FILES REQUIREMENTS:
+* Database: data_science_application.db
+* Flask Application: delete_missing_values.py
+* Template: delete_missing_values.html
+* Library: SQLite_Database.py (both the file name and the class are)
+
+EXISTING DATABASE:
+* data_science_application.db
+
+EXISTING LIBRARY:
+* SQLite_Database.py (both the file name and the class are)
+
+CURRENT FILE AND FOLDER STRUCTURE:
+data_science_application.py
+├── templates
+│   ├──data_science_application_index.html
+│   ├──data_science_application_basemodels.html
+├── libraries
+│   └── DataArchitecture.py
+├── static
+│   ├──data_science_application_styles.css
+│   ├──Model_Development_Process_Flow.PNG
+├── database
+│   └── data_science_application.db
+
+
+USE/EXPAND EXISTING CODE:
+* File name: SQLiteDatabasePreProcessor.py
+* File Type: Python Library
+* Code: 
+
+import pandas as pd
+import sqlite3
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+class SQLiteDatabasePreProcessor:
+
+    def create_dummy_variables(self, database_path, table_name, exclude_columns=[]):
+        conn = sqlite3.connect(database_path)
+        df = pd.read_sql(f"SELECT * FROM {table_name}", conn)
+        
+        # Separate the columns to exclude from dummy variable creation
+        excluded_df = df[exclude_columns]
+        
+        # Drop the columns to exclude before creating dummy variables
+        columns_to_encode = [col for col in df.columns if col not in exclude_columns]
+        df_to_encode = df[columns_to_encode]
+        
+        # Create dummy variables
+        df_encoded = pd.get_dummies(df_to_encode)
+        
+        # Combine the dummy variables with the excluded columns
+        df_combined = pd.concat([df_encoded, excluded_df], axis=1)
+        
+        # Save the modified DataFrame back to the database
+        df_combined.to_sql(table_name, conn, if_exists='replace', index=False)
+        
+        conn.close()
+        
+    def handle_missing_values(self, database_path, table_name):
+        # Connect to the SQLite database
+        conn = sqlite3.connect(database_path)
+        
+        # Read the table into a DataFrame
+        df = pd.read_sql(f"SELECT * FROM {table_name}", conn)
+        
+        # Replace blank or null values with NaN
+        df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
+        
+        # Drop rows with NaN values
+        df.dropna(inplace=True)
+        
+        # Save the cleaned DataFrame back to the database
+        df.to_sql(table_name, conn, if_exists='replace', index=False)
+        
+        # Close the connection
+        conn.close()
+    
+    def scale_numeric_columns(self, database_path, table_name, exclude_columns=[]):
+        conn = sqlite3.connect(database_path)
+        df = pd.read_sql(f"SELECT * FROM {table_name}", conn)
+        
+        # Determine numeric columns
+        numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns
+        
+        # Determine which numeric columns to scale (excluding specified columns)
+        cols_to_scale = [col for col in numeric_cols if col not in exclude_columns]
+        
+        # Scale the numeric columns
+        scaler = StandardScaler()
+        df[cols_to_scale] = scaler.fit_transform(df[cols_to_scale])
+        
+        # Save the modified DataFrame back to the database
+        df.to_sql(table_name, conn, if_exists='replace', index=False)
+        
+        conn.close()
+
+    def convert_integer_to_boolean(column_name: str, cutoff: float = None, table_name: str = None, database_path: str = None) -> str:
+        """
+        Converts an integer column to boolean based on a cutoff value or the median in a SQLite database table.
+    
+        :param column_name: The column name to convert.
+        :param cutoff: Optional cutoff value for conversion. If None, the median will be used.
+        :param table_name: Name of the database table to read and write the data.
+        :param database_path: Path to the SQLite database.
+        :return: Message indicating success or failure.
+        """
+        if table_name is None or database_path is None:
+            return "Error: Both table_name and database_path parameters must be provided"
+    
+        try:
+            # Connect to the database
+            conn = sqlite3.connect(database_path)
+    
+            # Load data from the specified table
+            df = pd.read_sql(f"SELECT * FROM {table_name}", conn)
+    
+            # Clean up column names
+            df.columns = df.columns.str.strip()
+    
+            # Print columns for debugging
+            print("Columns available in DataFrame:", df.columns.tolist())
+    
+            if column_name not in df.columns:
+                return f"Error: Column '{column_name}' not found in table '{table_name}'"
+    
+            new_column_name = column_name + '_boolean'
+            if cutoff is not None:
+                df[new_column_name] = df[column_name].apply(lambda x: 1 if x >= cutoff else 0)
+            else:
+                median_value = df[column_name].median()
+                df[new_column_name] = df[column_name].apply(lambda x: 1 if x >= median_value else 0)
+                if len(df) % 2 != 0:
+                    median_index = df[column_name].argsort().iloc[len(df) // 2]
+                    df.at[median_index, new_column_name] = 0
+    
+            # Save the updated DataFrame back to the database
+            df.to_sql(table_name, conn, if_exists='replace', index=False)
+    
+            conn.close()
+    
+            return "Success: Column converted and data saved to the database"
+    
+        except Exception as e:
+            return f"Error: {str(e)}"
+
+    def change_column_data_types(database_path: str, table_name: str, column_data_types: dict) -> str:
+        """
+        Changes the data type of columns in a SQLite database table.
+    
+        :param database_path: Path to the SQLite database.
+        :param table_name: Name of the table where the columns are to be altered.
+        :param column_data_types: Dictionary with column names as keys and new data types as values.
+        :return: Message indicating success or failure.
+        """
+        try:
+            # Connect to the database
+            conn = sqlite3.connect(database_path)
+            cursor = conn.cursor()
+    
+            # Get the current schema of the table
+            cursor.execute(f"PRAGMA table_info({table_name})")
+            columns = cursor.fetchall()
+    
+            if not columns:
+                return f"Error: Table '{table_name}' does not exist."
+    
+            # Define new table name
+            new_table_name = f"{table_name}_new"
+    
+            # Define columns for the new table
+            columns_definitions = []
+            for col in columns:
+                col_id, col_name, col_type, *rest = col
+                col_name = col_name.strip()  # Remove any leading/trailing spaces
+                if col_name in column_data_types:
+                    new_col_type = column_data_types[col_name]
+                else:
+                    new_col_type = col_type
+                columns_definitions.append(f"{col_name} {new_col_type}")
+            
+            # Create new table with updated column types
+            create_table_sql = f"CREATE TABLE {new_table_name} ({', '.join(columns_definitions)})"
+            cursor.execute(create_table_sql)
+    
+            # Copy data from old table to new table
+            column_names = [col[1].strip() for col in columns]  # Strip any spaces
+            column_names_str = ', '.join(column_names)
+            placeholders = ', '.join(['?'] * len(column_names))  # Use placeholders for values
+            copy_data_sql = f"INSERT INTO {new_table_name} ({column_names_str}) SELECT {column_names_str} FROM {table_name}"
+            cursor.execute(copy_data_sql)
+    
+            # Drop the old table
+            cursor.execute(f"DROP TABLE {table_name}")
+    
+            # Rename the new table to the old table's name
+            cursor.execute(f"ALTER TABLE {new_table_name} RENAME TO {table_name}")
+    
+            # Commit changes and close connection
+            conn.commit()
+            conn.close()
+    
+            return "Success: Data types changed and table updated."
+    
+        except Exception as e:
+            return f"Error: {str(e)}"

@@ -1,0 +1,45 @@
+<!----------------------------------------------------------------------->
+<!-- Note the rules for functionality (bootstrap) and aesthetics (CSS) -->
+<!----------------------------------------------------------------------->
+<!-------- CSS is for aesthetics, in general, not functionality --------->
+<!------ Bootstrap is for functionality, in general, not aesthetics------>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Project 3 Team 7{% endblock %}</title>
+ 
+<!--CSS-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<!--Bootstrapc-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="nav-pane">
+            <ul class="nav flex-column">
+                <li class="nav-item">Website Navigation
+                    <a class="nav-link" href="/">Instructions</a>
+                    <a class="nav-link" href="/data_dictionary">Display Data Dictionary</a>
+                    <a class="nav-link" href="/display_data">Display Table Data</a>
+                    <a class="nav-link" href="/chatgpt_analysis">ChatGPT Analysis</a>
+                    <a class="nav-link" href="/chatgpt_conversation">ChatGPT Conversation</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container mt-4">
+        {% block content %}
+        <!-- This block will be overridden by content from other pages -->
+        {% endblock %}
+    </main>
+    <footer class="mt-4">
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
