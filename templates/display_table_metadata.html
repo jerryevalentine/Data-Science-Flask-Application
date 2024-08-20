@@ -1,0 +1,23 @@
+{% extends "data_science_application_basemodels.html" %}
+
+{% block content %}
+    <h1>Display Table Metadata</h1>
+    <form method="POST" action="{{ url_for('display_table_metadata') }}">
+        <div class="form-group">
+            <label for="table_name">Select Table:</label>
+            <select class="form-control" id="table_name" name="table_name">
+                <option value="">-- Select Table --</option>
+                {% for table in tables %}
+                    <option value="{{ table }}">{{ table }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Display Table Metadata</button>
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ url_for('display_table_metadata') }}'">Clear</button>
+    </form>
+    <hr>
+    <h2>Metadata</h2>
+    {% if table_metadata %}
+        {{ table_metadata|safe }}
+    {% endif %}
+{% endblock %}

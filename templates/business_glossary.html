@@ -1,0 +1,97 @@
+{% extends "data_science_application_basemodels.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Glossary</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>Business Glossary</h1>
+    
+    <!-- Refresh Button -->
+    <form method="GET" action="{{ url_for('business_glossary') }}">
+        <button type="submit">Refresh</button>
+    </form>
+    
+    <!-- Data Table Display -->
+    <h2>Current Data</h2>
+    <table>
+        <tr>
+            <th>Term ID</th>
+            <th>Term</th>
+            <th>Definition</th>
+        </tr>
+        {% for row in table_data %}
+        <tr>
+            <td>{{ row.business_glossary_term_id }}</td>
+            <td>{{ row.business_glossary_term }}</td>
+            <td>{{ row.business_glossary_definition }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <!-- Form for Inserting/Updating Records -->
+    <h2>Add or Update a Record</h2>
+    <form method="POST" action="{{ url_for('insert') }}">
+        <table>
+            <tr>
+                <th>Term ID</th>
+                <th>Term</th>
+                <th>Definition</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="business_glossary_term_id" required></td>
+                <td><input type="text" name="business_glossary_term" required></td>
+                <td><input type="text" name="business_glossary_definition" required></td>
+            </tr>
+        </table>
+        <button type="submit">Insert</button>
+    </form>
+
+    <!-- Form for Updating Records -->
+    <h2>Update a Record</h2>
+    <form method="POST" action="{{ url_for('update') }}">
+        <table>
+            <tr>
+                <th>Term ID</th>
+                <th>Term</th>
+                <th>Definition</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="business_glossary_term_id" required></td>
+                <td><input type="text" name="business_glossary_term" required></td>
+                <td><input type="text" name="business_glossary_definition" required></td>
+            </tr>
+        </table>
+        <button type="submit">Update</button>
+    </form>
+
+    <!-- Form for Deleting Records -->
+    <h2>Delete a Record</h2>
+    <form method="POST" action="{{ url_for('delete') }}">
+        <input type="text" name="business_glossary_term_id" placeholder="Enter Term ID to Delete" required>
+        <button type="submit">Delete</button>
+    </form>
+</body>
+</html>
+{% endblock %}

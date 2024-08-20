@@ -1,0 +1,54 @@
+{% extends "data_science_application_basemodels.html" %}
+
+{% block title %}Table Summary Statistics{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Table Summary Statistics</h2>
+    
+    <form method="POST" action="/table_summary_statistics">
+        <div class="form-group">
+            <label for="table">Select Table:</label>
+            <select class="form-control" id="table" name="table">
+                {% for table in tables %}
+                    <option value="{{ table }}">{{ table }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Display Summary Statistics</button>
+        <a href="/table_summary_statistics" class="btn btn-secondary">Refresh</a>
+    </form>
+    
+    {% if stats %}
+        <h3>Summary Statistics for {{ selected_table }}</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Column</th>
+                    <th>Min</th>
+                    <th>Q1</th>
+                    <th>Median</th>
+                    <th>Mode</th>
+                    <th>Q3</th>
+                    <th>Max</th>
+                    <th>Standard Deviation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for column, stat in stats.items() %}
+                <tr>
+                    <td>{{ column }}</td>
+                    <td>{{ stat.min }}</td>
+                    <td>{{ stat.Q1 }}</td>
+                    <td>{{ stat.median }}</td>
+                    <td>{{ stat.mode }}</td>
+                    <td>{{ stat.Q3 }}</td>
+                    <td>{{ stat.max }}</td>
+                    <td>{{ stat.std_dev }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}
