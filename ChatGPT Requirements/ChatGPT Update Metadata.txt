@@ -1,0 +1,333 @@
+User Story and Functional Requirements for Update Metadata
+Flask Route that will allow the user to view metadata and change metadata
+
+JIRA
+GPT-82 (and linked tasks)
+
+USER STORY: 
+As a data scientist I want a page where I can:
+* View a specific data table’s metadata.
+* Change a specific tables metadata.
+* Need refresh buttons for the page.
+* If there is an error it must be displayed
+
+TYPE OF CODE/APPLICATION NEEDED:
+Flask Application
+
+FUNCTIONAL REQUIREMENTS:
+* HTML table to display the metadata for a table.
+* Drop-Down list box that allows the user to select existing tables in the database.
+* Button 'Display Table Metadata' that will load the table selected in the drop-down list box.
+* Another drop-down list box that shows all the columns in the selected table.
+* A list box with all the data types for the SQLite DATABASE
+* A button that says 'Update Column Metadata' that will change the selected tables metadata
+* A button that will clear all the information in the tables, text boxes and ddl'says
+* Error messages include:
+- Cannot change text column to numeric
+- Etc.
+
+CODING REQUIREMENTS AND GUIDELINES:
+* The code must use the existing library functionality.
+* If the functionality needs to be created then the new functions need to be modified.
+* If existing functions need to be changed it must be explicitly noted as it might break existing routes.
+* All programming code, whenever possible, needs to be in a library.  
+* Any code for the route must reside in the route.  Putting code into another route or a function in the application is not permitted.
+
+APPLICATION ARCHITECTURE:
+* Database: data_science_application.db
+* Flask Application: metadata_update.py
+* Template: metadata_update.html
+* Library: SQLite_Database.py (both the file name and the class are)
+
+IMAGE(S):
+* See the image that is inserted for Application Architecture
+
+NEW OR UPDATED CODE AND FILES REQUIREMENTS:
+* metadata_update.html (new)
+* metadata_update.py (new flask application)
+* SQLite_Database.py - only update/change as needed.
+
+EXISTING DATABASE:
+* data_science_application.db
+* DATABASE_PATH = 'database/data_science_application.db'
+
+EXISTING LIBRARY:
+* SQLite_Database.py with class name SQLite_Database
+
+CURRENT FILE AND FOLDER STRUCTURE:
+├── templates
+│   ├──data_science_application_index.html
+│   ├──data_science_application_basemodels.html
+├── libraries
+│   └── DataArchitecture.py
+├── static
+│   ├──data_science_application_styles.css
+│   ├──Model_Development_Process_Flow.PNG
+├── database
+│   └── data_science_application.db
+
+EXISTING CODE:
+* File name: data_science_application_basemodels.html
+* File Type: Base HTML that applies to all templates
+* Code: 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>{% block title %}Neural Network and ChatGPT{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="nav-pane">
+            <ul class="nav flex-column">
+                <li class="nav-item">Website Navigation
+                    <a class="nav-link" href="/">Model Development Process Flow</a>
+                    <a class="nav-link" href="/business_glossary">Business Glossary</a>
+                    <a class="nav-link" href="/file_upload">Upload CSV File</a> <!-- New link -->
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container mt-4">
+        {% block content %}
+        <!-- This block will be overridden by content from other pages -->
+        {% endblock %}
+    </main>   
+</body>
+</html>
+
+EXISTING CODE:
+* File name: SQLite_Database.py
+* File Type: Python Library
+* Code: 
+
+import sqlite3
+import pandas as pd
+from flask import g
+
+class SQLite_Database:
+    def __init__(self, db_path):
+        self.db_path = db_path
+
+    def connect(self):
+        """Establish a connection to the SQLite database."""
+        if 'conn' not in g:
+            g.conn = sqlite3.connect(self.db_path)
+        return g.conn
+
+    def close(self):
+        """Close the connection to the SQLite database."""
+        conn = g.pop('conn', None)
+        if conn:
+            conn.close()
+
+    def insert_dataframe_to_db(self, df, table_name):
+        """
+        Inserts a pandas DataFrame into the SQLite database.
+
+        Parameters:
+        df (pandas.DataFrame): The DataFrame containing the CSV data.
+        table_name (str): The name of the table to insert data into.
+        """
+        conn = self.connect()
+        df.to_sql(table_name, conn, if_exists='replace', index=False)
+        conn.commit()
+
+    def fetch_table(self, table_name):
+        """
+        Fetches all records from a specific table.
+
+        Parameters:
+        table_name (str): Name of the table to fetch records from.
+
+        Returns:
+        pd.DataFrame: DataFrame containing all records from the table.
+        """
+        conn = self.connect()
+        query = f"SELECT * FROM {table_name}"
+        df = pd.read_sql_query(query, conn)
+        return df
+
+    def get_tables_metadata(self):
+        """
+        Retrieves metadata for all tables in the SQLite database.
+
+        Returns:
+        pd.DataFrame: DataFrame containing table names, column names, and data types.
+        """
+        conn = self.connect()
+        query = "SELECT name FROM sqlite_master WHERE type='table';"
+        tables_df = pd.read_sql_query(query, conn)
+        metadata = []
+
+        for table in tables_df['name']:
+            columns_query = f'PRAGMA table_info("{table}");'
+            columns_df = pd.read_sql_query(columns_query, conn)
+            for _, row in columns_df.iterrows():
+                metadata.append((table, row['name'], row['type']))
+
+        metadata_df = pd.DataFrame(metadata, columns=['Table Name', 'Column Name', 'Data Type'])
+        return metadata_df
+
+    def execute_query(self, query):
+        """
+        Executes a raw SQL query and returns the result as a DataFrame.
+
+        Parameters:
+        query (str): The SQL query to execute.
+
+        Returns:
+        pd.DataFrame: The result of the query.
+        """
+        conn = self.connect()
+        df = pd.read_sql_query(query, conn)
+        return df
+
+    def insert_record(self, table_name, columns, values):
+        """
+        Inserts a single record into a specific table.
+
+        Parameters:
+        table_name (str): Name of the table to insert the record into.
+        columns (list): List of column names.
+        values (list): List of values to insert.
+        """
+        conn = self.connect()
+        placeholders = ', '.join(['?'] * len(values))
+        query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({placeholders})"
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+
+    def update_record(self, table_name, columns, values, condition):
+        """
+        Updates a single record in a specific table.
+
+        Parameters:
+        table_name (str): Name of the table to update the record in.
+        columns (list): List of column names to update.
+        values (list): List of new values.
+        condition (str): SQL condition to identify the record(s) to update.
+        """
+        conn = self.connect()
+        set_clause = ', '.join([f"{col} = ?" for col in columns])
+        query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+
+    def delete_record(self, table_name, condition):
+        """
+        Deletes a record from a specific table.
+
+        Parameters:
+        table_name (str): Name of the table to delete the record from.
+        condition (str): SQL condition to identify the record(s) to delete.
+        """
+        conn = self.connect()
+        query = f"DELETE FROM {table_name} WHERE {condition}"
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+
+    def clear_table(self, table_name):
+        """
+        Clears all records from a specific table.
+
+        Parameters:
+        table_name (str): Name of the table to clear.
+        """
+        conn = self.connect()
+        query = f"DELETE FROM {table_name}"
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+
+What ChatGPT responded with in terms of user stories and function requirements:
+Here's how you can structure the implementation of the feature for updating metadata in your Flask application:
+1. User Story and Functional Requirements
+
+User Story:
+As a data scientist, you want a page in your Flask application where you can:
+
+    View the metadata of a specific data table.
+    Change the metadata of a specific table.
+    Use refresh buttons to reload the page.
+    See error messages if something goes wrong.
+
+Functional Requirements:
+
+    HTML table to display metadata of the selected table.
+    Drop-down list to select existing tables in the database.
+    Button labeled "Display Table Metadata" to load and show metadata for the selected table.
+    Drop-down list to show all columns of the selected table.
+    List box with all available data types in SQLite.
+    Button labeled "Update Column Metadata" to modify the selected column's metadata.
+    Button to clear all fields and reload the page.
+    Error messages for cases like attempting to change a text column to a numeric type, among others.
+
+Errors from first itteration:
+
+Value Error:
+ValueError
+
+ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+Traceback (most recent call last)
+
+    File "C:\Users\jerry\anaconda3\Lib\site-packages\flask\app.py", line 1498, in __call__
+
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    File "C:\Users\jerry\anaconda3\Lib\site-packages\flask\app.py", line 1476, in wsgi_app
+
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+    File "C:\Users\jerry\anaconda3\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    File "C:\Users\jerry\anaconda3\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    File "C:\Users\jerry\anaconda3\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+
+    File "C:\Users\jerry\anaconda3\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    File "C:\Users\jerry\Programming\Flask_dev\metadata_update.py", line 39, in metadata_update
+
+    metadata=metadata or pd.DataFrame(),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    File "C:\Users\jerry\anaconda3\Lib\site-packages\pandas\core\generic.py", line 1577, in __nonzero__
+
+    raise ValueError(
+    ^
+
+    ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+	
+	Fix:
+	
+	Did not work: 
+	metadata = metadata or pd.DataFrame()
+	
+	Works:
+	if metadata is None:
+    metadata = pd.DataFrame()
+
